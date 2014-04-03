@@ -1,0 +1,717 @@
+                     Nonformal introduction to  ADA-95
+                           by Leonid  Dulman
+
+        Since  ADA-95  may  become  the  base  programming  language  in 21
+    century, the question "How to teach ADA-95 ?" has top-priority.
+
+        What principles must we follow teaching that programming language?
+
+        1. The language must be studied  from "tabula rasa" , not referring
+    to other programming languages (including ADA-83);
+
+        2.  We  have  to  avoid  referring  to  the  notions  that  will be
+    introduced later ;
+
+        3. We have to use natural examples and clear analogies.
+
+        ADA-95  is a  strong and   logically complete language. We  need to
+    understand  all its  base constructions.  Thus, its  study "online"  is
+    impossible.  We  must  come  back  to  the  earlier  introduced notions
+    permanently expanding their sphere.
+
+        We study the  language by a spiral, the  new language constructions
+    are continuations of the earlier introduced ones.
+
+        The  main question  for a  student (in  a study  process) is how to
+    solve his problems by means of the language implementations ?
+
+        For a  teacher it is  very important to  show what problems  can be
+    solved by means of certain language constructions.
+
+        You must remember that some problems  can not be solved by means of
+    ADA-95 clauses.There are procedures with variable number of parameters,
+    problems that have  a single realization (such as  explicit transfer of
+    control), and different realization problems (such as leaving a loop by
+    statements GOTO or EXIT).
+
+        The top  important goals of training  are to connect the  aims of a
+    teacher and a  student, and to get accurate  answers for all questions.
+    This work  is an attempt to  give common ADA-95 descriptions  using the
+    above principles.
+
+        Let  us  introduce  the  term  "PROGRAM"  as  some  entire language
+    construction which transforms the several  input data to require output
+    results.
+
+                            ADA-95  program
+                      ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+                     ^³     work data     ³.
+                    . ³   --------------- ³ .
+                   . ^³      process 1    ³  .
+                  . . ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ   .
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿   . ^                        .
+³  common data  ³ .  .ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿     .  ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+³protected data ³....>³     work data     ³      . ³   results     ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ .. .³   --------------- ³------->³   (output     ³
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿ ... ³      process 2    ³      . ³    data    )  ³
+³     input     ³.. . ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ     .  ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+³     data      ³.   .                         .
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ .   V                       .
+                   .  ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿  .
+                    . ³    work data      ³ .
+                     V³   --------------- ³.
+                      ³      process n    ³
+                      ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+        Input data  are transformed into  results by means  of one or  more
+    parallel execution processes.
+
+        Thus  we manipulate  objects (data)  that must  be transformed  and
+    processes which execute these transformations.
+
+        The objects used for the different means have different qualitative
+    characteristics.  The  qualitative  characteristic  of  the objects are
+    named TYPE.
+
+        The object's type answers the question "What is it ?"
+
+        What types of objects would we like to have in the language ?
+
+        1.  Types  for  engineering   and  business  calculations  such  as
+    temperature or money (FLOAT and FIXED types);
+
+        2.  Types  of  objects  for  numbering  other objects, for instance
+    quantity of books. There are INTEGER and MOD types ;
+
+        3. The  types of objects for  working with words are  CHARACTER and
+    WIDE_CHARACTER;
+
+        4. The types of TRUE/FALSE objects are BOOLEAN.
+
+        The types described above are named PREDEFINED in the language.They
+    provide a base for new types or specifications named SUBTYPE.
+
+        In ADA-95 the type is subtype for itself.
+
+        But if you a composer and want  to write the notes, what do you do?
+    The  language creates  objects such  as  notes  or colors  by means  of
+    enumeration types.
+
+        TYPE note is (C,D,E,F,G,A,H);
+
+        The common types INTEGER,  MOD, BOOLEAN, CHARACTER, WIDE_CHARACTER,
+    are enumeration types.
+
+        For example, TYPE BOOLEAN is (FALSE,TRUE).
+
+        A objects can be created by means of the above types:
+
+        VELOCITY : FLOAT;
+        MONEY : FIXED;
+        TYPE BYTE IS MOD 16#100#; -- one byte .
+        NUMBER : BYTE;
+
+        We have the  magic word "NEW" to create a  new type having the same
+    "qualities" and with the same  internal structure as an already defined
+    type.
+
+        TYPE MEAT IS NEW FLOAT;
+        TYPE BEEF IS NEW MEAT;
+
+        But  how  can  we  describe  a  group  of homogeneous elements, for
+    instance text line? There is an  array construction in the language for
+    this purpose.
+
+        TYPE STRING IS ARRAY(POSITIVE RANGE <>) OF CHARACTER;
+        TYPE WIDE_STRING IS ARRAY(POSITIVE RANGE <>) OF WIDE_CHARACTER;
+
+        These  types  are  predefined  and  represent  unbounded  arrays. A
+    variable which determines element location is named index.
+
+        An index has  a first and a last value.  Its range is defined using
+    the first and last values as range 3 .. 13 for instance.
+
+        TYPE TABL IS ARRAY(1..10, -1..11) OF  FLOAT; is an example of a two
+    dimensional array of  float numbers with bounds in  the first direction
+    of (1, 10) and in the second direction of (-1,11).
+
+        The index type is commonly INTEGER  or MOD but we have the question
+    "can we have  an array with week-days as the  index?". For example, the
+    array might store the usual working time for each day.
+
+        The index may be of any enumeration type in ADA-95.
+
+        TYPE WEEK IS (SN,MN,TU,WE,TH,FR,ST);
+        TYPE WORK_TIME IS ARRAY(WEEK) OF INTEGER;
+        TM : WORK_TIME := (0,8,8,8,8,6,0);
+
+        Then TM(ST) for instance is equal to 0.
+
+        Let us assume we want to collect information about a student in one
+    object.
+
+        We  need  name  and  growth.  How  is  this  object described ? The
+    compound  type RECORD  may be  used somewhat  analogous to STRUCTURE in
+    other languages.
+
+        The record includes of one or more element types .
+
+        TYPE STUDENT IS RECORD
+                NAME   : WIDE_STRING(1..24);
+                GROWTH : FLOAT;
+        END RECORD;
+
+        Notice that to  separate the record from other  statements we write
+    "END RECORD" after the record components.
+
+        Let us remark  that a type contains is  the quality characteristics
+    of an object  and it answer the question  "what is it ?". But  often we
+    have to answer  the question "where is it  ?". How can we refer  to the
+    object? This may be done directly by name such as
+        LENGTH, WIDTH : INTEGER;   and then
+        WIDTH := 3;
+        LENGTH := width * 5;
+
+        Alternatively,  we  often  desire  to  refer  to  an object via its
+    storage location  or address. The POINTER  terminology commonly used in
+    other  languages is  replaced in  ADA  by  the term  "ACCESS TYPE"  for
+    indirect location of or reference to objects.
+
+        This  access type  object is  the address  for the object connected
+    with it.
+
+        TYPE POINTER IS ACCESS STUDENT;
+
+        Remark the important properties of the access types:
+
+        1. An access type points to objects connected with it;
+
+        2. The access type object can create recursive data (a list or tree
+    for instance). It can be a component of a record (node);
+
+        3. If a type description contains the key word ALIASED, all objects
+    of this type may be called by reference.
+
+        A simple example of an object and its pointer is follow:
+
+        TYPE OBJECT_TYPE IS .........
+        TYPE POINT_TO_OBJECT_TYPE IS ACCESS ALL OBJECT_TYPE;
+        OBJECT          : ALIASED OBJECT_TYPE;
+        POINT_TO_OBJECT : POINT_TO_OBJECT_TYPE := OBJECT'ACCESS;
+
+        Now we shall describe a transforming "process".
+
+        The  process is  a set  of  the  language statements  which may  be
+    classified into groups:
+
+        1. Assignment_statement is ":=";
+        2. Control statements are LOOP, IF, CASE, GOTO, SELECT;
+        3. Transform statements are subprogram calls.
+        4. The statement of an emergency situation is EXCEPTION.
+
+        There  are two  forms of  subprogram :  procedures and functions. A
+    procedure call  is a statement; a  function call is an  expression  and
+    returns a value.
+
+        Parameters are the objects that take part in transformations.
+        Procedures and functions may be used in recursive processes.
+        Inside the procedure or the function we can use others procedures and
+    functions.
+        Notice that subprogram parameters may be only objects and they must
+    have strongly defined types.
+
+        If a function  has the parameters and the result  of the same type,
+    it  is  named  a  primitive  operation.  The  primitive  operations are
+    introduced to finish the recursive process. They are predefined for the
+    predefined types.
+
+        For example functions "+","-","*","/","**", MOD, REM are predefined
+    for the INTEGER type.
+
+        The notation I  := "+"(J,K) means that the integer  variable i is a
+    sum of the integers j and k.
+
+        It  guarantees  the  checking  of  parameter  types  for  the given
+    subprogram. We can identify subprogram not only by the name, but by the
+    types or  the numbers of  parameters. This property  is named operation
+    compatibility.
+
+        Let us have
+        I   : INTEGER;
+        S,R : CHARACTER; ,
+        then before the function
+                R:="+"(S,I) can be used it must be defined since the normal
+    "+" function expects its two paramaters to be of the same type.
+         The function "+" with two parameters must be defined. The first is
+    the character and the second is the integer. And it returns the character
+    type.  This  function  has  nothing  common  with  the  function "+" in
+    statement I:="+"(J,K) where J and K are of the same type and where "+" is
+    predefined;
+
+        Two questions arise regarding the subprogram conception:
+        1. Can we call or access a subprogram by way of its object address?;
+
+        2. What can we do if a subprogram is the parameter of a subprogram?
+    For example, we want to calculate an integral of various functions.
+
+        This problem may be solved by means of using access type objects as
+    parameters for subprograms.
+
+        TYPE FUN_PTR IS ACCESS FUNCTION(X:FLOAT) RETURN FLOAT;
+        FUN, FUNSIN, FUNCOS : FUN_PTR;
+                @@...........
+        FUNSIN := SIN'ACCESS; FUNCOS := COS'ACCESS; and so on.
+
+        But if FUN  is an object, it may be  used as a subprogram parameter
+    for the integral calculation.
+
+        Thus a subprogram  has parameters, but have can  we generalize this
+    very flexible mechanism  to types ? Can a type  depends on parameters ?
+    An array index  is the analogy of parameter,  but what do we do  for an
+    compound objects made up of several types? We use RECORDS.
+
+        If a  parameter controls the internal  numeric characteristics of a
+    record, it's called a discriminant.
+
+        For example
+             TYPE VARYING(MAXIMUM_LENGTH:INTEGER) IS RECORD
+             LEN : INTEGER RANGE 1..MAXIMUM_LENGTH;
+             CNT : STRING(1..MAXIMUM_LENGTH);
+             END RECORD;
+
+        This record description allows creation of varying length strings
+    depending on the length given at string object creation.
+
+    S1 : VARYING(100); S2:VARYING(255);
+
+        But  the  parameters  can  also  be  used  for the record structure
+    control. The parameter is called a variant parameter.
+
+        For example,
+          TYPE MOTOR IS (CAR,LORRY);
+          TYPE AUTO(MASH : MOTOR) IS RECORD
+           SPEED : FLOAT;
+           CASE MASH IS
+            WHEN CAR    => MEN : INTEGER;
+            WHEN LORRY  => WEIGHT : FLOAT;
+           END CASE;
+           END RECORD;
+        Thus  we  may  create  either  a  car  with  a  specific  number of
+    MEN (passengers) or a lorry with a specific WEIGHT.
+        It  is a  very comfortable  mechanism. You  can create objects that
+    have  many  common  properties,  but  with  some  difference  in  their
+    structure.
+
+        However it is a static mechanism  and you have to examine the all
+    possible  variants.  But  if  you  design  a  large  program, it's very
+    difficult to see all possible requirements  at once and these types may
+    be very cumbersome.
+
+        The language  allows creation of  the new types  dynamically. These
+    types inherit  the structure of  an earlier declared  type and add  new
+    necessary record components.
+
+        They are called TAGGED records.
+
+        TYPE FIGURE IS TAGGED RECORD
+                NAME   : STRING(1..8);
+                SQUARE : FLOAT;
+        END RECORD;
+
+        Now we  can create additional  new types from  this parent type  as
+    needed by adding the necessary components. Let us note that all derived
+    types keep  the properties of  the tagged record.  These new types  are
+    able to be the prototype for other tagged types allowing a "tree" to be
+    created. This tree joins tagged types into the single term "CLASS".
+
+        Since the class is introduced  dynamically, its subprograms must be
+    called in dynamically  too. This property of the  tagged types is named
+    dynamic  dispatch. In  this case  the type  controls the  choice of the
+    subprograms for operation compatibility.
+
+       TYPE TRIANGLE IS NEW FIGURE WITH RECORD
+            L1,L2,L3:FLOAT;
+            END RECORD;
+
+       TYPE RECTANGLE IS NEW TRIANGLE WITH RECORD
+            L4      :FLOAT;
+            END RECORD;
+
+        The  record  unites  the  different  object  characteristics in one
+    structure  utilizing the  full logic  characteristic including  all the
+    parents. But  how can we unite  the different subprograms in  one logic
+    structure?
+
+        For example, assume we need a group of i/o subprograms ?
+
+        The  term PACKAGE  is introduced  into the  language to  create the
+    logic unit. It joins objects, types and subprograms.
+
+        The   packages  have   specifications  in   which  types,  objects,
+    subprograms  and exceptions  are described.  If you  change the package
+    specification you must recompile all program units which utilize, with,
+    or reference the package.
+
+        If the  package specification has subprogram(s),  the package has a
+    BODY with the code commonly in a different file from the SPECIFICATION.
+    The  body   includes  ada  source   code  for  the   execution  of  the
+    subprogram(s).  If the  package body  is changed  and is  in a separate
+    file, only  the BODY file needs  to be recompiled. This  provides large
+    development time savings for large programs with many separate files.
+
+        The  package type-specifications may  be declared  as PRIVATE. It's
+    very  important that  all transformations  of objects  of private  data
+    types  be done  by means  of the  package subprograms  only. If  a type
+    is designated  as LIMITED PRIVATE we  can't compare two objects  of the
+    type except in the package-defined procedures.
+
+        PACKAGE PASSWORD IS
+                TYPE KEY IS LIMITED PRIVATE;
+                FUNCTION CANCEL(KL:KEY) RETURN BOOLEAN;
+                PRIVATE
+                        TYPE KEY IS STRING(1..8);
+        END PASSWORD;
+
+        Packages have  may contain the  logical full system,  but there are
+    two difficulties:
+
+        1. We  must recompile the entire  system If we want  to make even a
+    minor modification;
+        2. A package may be very large but you may need only a small subset.
+   It's the package SSP,for example .
+        How are these problems solved ?  We added new record components for
+    the tagged types  to create the related new child  types. By analogy we
+    have the parents-children mechanism for the packages. The types and the
+    primitive operations are introduced in  root level, and new subprograms
+    are described in the children packages.
+
+        PACKAGE PASSWORD.CHANGE IS
+        PROCEDURE CHG(KL:KEY) ;
+        END PASSWORD.CHANGE;
+
+        This mechanism  allows creation of  packages with smaller  size and
+    more logical complication.  Now we have solved almost  the all problems
+    of one  process program design .  But we must mention  the one "little"
+    problem.
+
+        If we use  many types for input/output data,  we need many packages
+    (subprograms).  But  all  types  derived  from  one predefined type,use
+    equivalent operations. For  instance, in the FIGURE type  above, we may
+    need a  display function for  each parent and  child, SQUARE, TRIANGLE,
+    and RECTANGLE.
+
+        In ADA-95 we have the subprograms with parameters, the records with
+    parameters, and it's naturally to ask  the question "can a package have
+    parameters ? "
+
+        The  language  has  the  type  parametric  apparatus.  They are the
+    GENERIC procedures and packages.
+
+        For example
+
+            GENERIC TYPE REAL IS DIGITS <>;
+            PACKAGE IO IS
+                PROCEDURE READ (X : OUT REAL);
+                PROCEDURE WRITE(X : REAL);
+            END IO;
+
+        When the IO  specification and body of the  package are compiled we
+    write
+
+        WITH IO;
+                 ...............................
+        PACKAGE MEAT_IO IS NEW IO(MEAT);
+        PACKAGE VEAL_IO IS NEW IO(VEAL);
+        Z: MEAT;   Y: VEAL;
+
+        Now  we  have  the  i/o   procedures  for  the  MEAT  meat.read(z),
+    meat.write(z)  and the  procedures veal.read(y),  veal.write(y) for the
+    veal .  It's needed to remark  that the bodies of  generic packages and
+    subprograms  would "with"  TEXT_IO and   we have  to use  the primitive
+    operations therein.
+
+        But what  to do if  a system is  been designing ?  We approximately
+    know what  to do with data  but don't know the  data internal structure
+    and formation.  We want to connect  the process of planning  and design
+    with the process of programming.
+
+        This  method  is  named  object-oriented  programming  (OOP) and is
+    realized in ADA-95  by means of packages with  ABSTRACT data types. The
+    peculiarity  of  these  packages  is  the  absence  of body subprograms
+    because the realization does not yet permit body definition during this
+    stage. We want to introduce complex numbers but have not yet decided on
+    their  presentation (cartesian,  polar or   mix) at  this stage  of the
+    system design.
+
+        PACKAGE ROOT IS
+                TYPE DATA IS ABSTRACT TAGGED NULL RECORD;
+                FUNCTION "+"(X,Y:DATA) RETURN DATA IS ABSTRACT;
+                FUNCTION "-"(X,Y:DATA) RETURN DATA IS ABSTRACT;
+                FUNCTION "*"(X,Y:DATA) RETURN DATA IS ABSTRACT;
+                FUNCTION "/"(X,Y:DATA) RETURN DATA IS ABSTRACT;
+        END ROOT;
+
+        This  package has  introduced abstract  type DATA  and declared the
+    primitive operations. Now we can  create child package root.complex and
+    declare type complex_type.
+
+        PACKAGE ROOT.COMPLEX_CARTESIAN IS
+                TYPE COMPLEX_TYPE IS NEW DATA WITH PRIVATE;
+                FUNCTION "+"(X,Y:COMPLEX_TYPE) RETURN COMPLEX_TYPE;
+                FUNCTION "-"(X,Y:COMPLEX_TYPE) RETURN COMPLEX_TYPE;
+                FUNCTION "*"(X,Y:COMPLEX_TYPE) RETURN COMPLEX_TYPE;
+                FUNCTION "/"(X,Y:COMPLEX_TYPE) RETURN COMPLEX_TYPE;
+
+        PRIVATE
+                TYPE COMPLEX_TYPE IS NEW DATA WITH RECORD
+                RE :FLOAT;
+                IM :FLOAT;
+                END RECORD;
+
+        END ROOT.COMPLEX_CARTESIAN;
+
+        We can write the  primitive operations "+","-","*","/" and describe
+    the package body therefore.
+
+        Let  us finally  remark that  ADA-95 gives  users the  unrestricted
+    capability to write complicated and safe programs.
+
+        Now  we can  study inter  process communications.  What variants of
+    these communications we are interested in?
+
+        1. There  are fully independent  processes. They start  at the same
+    time and  don't interact. For  example, there are  postmen. They go  to
+    work in the morning, collect the  correspondence and go away to deliver
+    it.
+
+        2. There  are  independent processes  which may  be aborted by time
+    limit or special signals, for example, there is a blitz-chess.
+
+        3. There are processes which  synchronize their acts in fixed clock
+    time. For example,  the employees were invited to  the conference at 11
+    o'clock. Everybody does his work before  11, they gather at the meeting
+    place  at  11  o'clock,  and   everybody  does  his  work  again  after
+    conference.
+
+        4. There  are processes which  are time independent,  but they work
+    with  common  (shared)  objects  and  depend  on their accessibility or
+    inaccessibility. For  example, there is  work with a  data base in  the
+    correction mode.
+
+        5. There are the processes with time and shared objects dependency.
+    For example,  the permission to turn  on the fire extinguish  system if
+    the protection system has worked for 5 seconds .
+
+        TASKs are the  processes called from the main  process and executed
+    in parallel  with it. The task  is an object of  the "process" type. We
+    use the term "TASK TYPE" for their declarations.
+
+        The  task   has  two  execution   methods.  These  methods   repeat
+    consistently:
+
+        1. There may be an independent asynchronous part ;
+        2. There may be a non-independent part requiring synchronization of
+    time or data with others tasks.
+
+        If the synchronization part is  needn't (post's example) the second
+    part is  absent. If the synchronization  is required, the synchronously
+    part is named ENTRY and marked in the group
+
+     ACCEPT <entry_name>[(parameter list)] DO
+     ..........
+     END  [<entry_name>];
+
+   internal of the task body.
+
+        The language has an asymmetric task mechanism if ones tasks require
+    rendezvous  with others  for  data  exchange and  synchronization their
+    actions.
+
+        Thus,  the requiring-rendezvous  task executes  independently until
+    the  entry-calling  point.  The  called  on  rendezvous  task  executes
+    independently  until its  ACCEPT_statement. Whatever  tasks has arrived
+    first,  must wait  for the  partner and  only after  rendezvous may  it
+    continue its independent execution.
+
+         If one task  object with Entry point called from many others tasks
+     then to ACCEPT_statement will be QUEUE and requiring-rendezvous tasks
+     will be served in FIFO mode.
+
+        Thus the task type, similarly for the package description, requires
+    the specification part to declare entry points rendezvous, and the body
+    to contain source code to accomplish the needed action. As a rule, some
+    device (disk or  elevator ) is connected with task,  but its control is
+    connected with entry.
+
+        TASK TYPE READCARD IS
+                ENTRY BUFFER(C:OUT CHARACTER) ;
+        END READCARD;
+
+        Entry description is similar to  the procedure ones. Let us remark,
+    that tasks can be declared  with discriminant (record analog), and from
+    task  types  we  can  use  both  the  task  objects and the task arrays
+    (family).
+
+        For example, READERS:ARRAY(1..8) OF READCARD;
+
+      If you want to connect device interruption with Entry point you may
+   do it. For example task semaphore:
+
+       TASK LIGHT is
+         entry STOP ; -- button to stop traffic
+         for STOP'address use 16#100# ;  -- address interruption
+      end LIGHT ;
+
+      In this example describe semaphore controlled task LIGHT with entry
+      STOP for stopping traffic. In main program or others tasks needn't
+      to write LIGHT.STOP for calling entry because calling modeled
+      by means of turning on button on semaphore and takes interruption
+      at address 16#100#.
+
+        The task starts at once after the object declaration (after BEGIN).
+    But how can we control its start and finish ?
+
+        The  task  finish  may  be  natural  (  end  of  task body), normal
+    (execution TERMINATE_statement) and abnormal (execution ABORT_statement
+    from other tasks).
+
+        The  task  start  is  a  more  complex  problem.  The  direct start
+    mechanism is absent  but the indirect mechanism is  provided via ACCESS
+    types. The task type (similarly to any other) can be connected with the
+    access type.  The task object  is dynamically created  by the generator
+    NEW .
+
+        The  task   execution  is  suspended   until  partners  reach   the
+    rendezvous-point and waiting may be unlimited in a time.
+
+        How can we limit the rendezvous  wait time or refuse the rendezvous
+    with the task A and require the rendezvous with the task B ?
+
+        The language has a SELECT_statement for this goal.
+
+        An example follows.  The students have arrived at  the lecture, but
+    the professor  is absent. How  long they must  wait for a  rendezvous ?
+    Assume that they have decided to wait 15 seconds. Then we must write
+
+        SELECT
+        DELAY 15.0;
+        GOHOME;
+        THEN ABORT
+        Student.LECTURE;
+        END SELECT;
+
+        But  students may  arrive early  at the  lecture. More correctly we
+    should write:
+
+        SELECT
+          DELAY UNTIL Time_encounter+15.0;
+          GOHOME;
+          THEN ABORT
+          Student.LECTURE;
+        END SELECT; -- where Time_encounter is the time set for the lecture.
+
+        We  can  guarantee  safe  work  with  shared  data  by means of the
+    SELECT_mechanism, as in the calling task or in the called task, but the
+    ADA-95 has more elegant solution. This is the PROTECTED types.
+
+        The protected type  is a little "kingdom" in  which is declared the
+    objects, the procedures, the functions and the entrees.
+
+        The shared  data, used by  different tasks, must  be protected from
+    use during changes.
+
+        All data manipulations  can be done only by  means of the protected
+    functions for  reading only, the protected  procedures for monopolizing
+    changing  and the  protected entry  for the  synchronizing. The boolean
+    object-semaphore allows  or prohibits shared data  reformation in entry
+    calls. It keeps waiting for the its TRUE value.
+
+        Consider a simple and frequent example, the system timer.
+
+        WITH ADA.CALENDAR;
+---------------------
+        TYPE SYSTEM_TIME IS NEW ADA.CALENDAR.TIME;
+
+        PROTECTED TYPE SYSTEM_CLOCK IS
+                FUNCTION READ_TIME(TM:SYSTEM_TIME) RETURN STRING;
+                ENTRY CAN_CHANGE(NT:STRING;TM:IN OUT SYSTEM_TIME);
+                PRIVATE
+                ENTRY FREE_TIME;
+                FLAG:BOOLEAN:=FALSE;
+                END SYSTEM_CLOCK;
+
+        PROTECTED BODY SYSTEM_CLOCK IS
+
+                FUNCTION READ_TIME(TM:SYSTEM_TIME) RETURN STRING IS
+                BEGIN
+                        @@..........................
+                END READ_TIME;
+
+        ENTRY CAN_CHANGE(NT:STRING;TM:IN OUT SYSTEM_TIME) WHEN NOT FLAG IS
+                BEGIN  FLAG:=TRUE;
+                TM:=.... ;-- implementation define;
+                REQUEUE  FREE; --
+        END CAN_CHANGE;
+
+        ENTRY FREE WHEN TRUE IS
+                BEGIN FLAG:=FALSE;
+        END FREE;
+        END SYSTEM_CLOCK;
+
+        ST_CLOCK:SYSTEM_CLOCK; -- protected object
+        TM:SYSTEM_TIME;
+
+        We can read time from any tasks in any moment.
+
+        TMM:=CLOCK.READ_TIME(TM);
+
+        But the actual system time change  can be accomplished by the entry
+    CAN_CHANGE  and  only  by  the  condition  FLAG=FALSE.  It's  the  main
+    condition of execution.
+
+        The statement REQUEUE for private entry FREE has done TMM access to
+    change from others  tasks. The requeue statement is  designed to handle
+    two main situations:
+
+        - after an accept statement or  entry body begins execution, it may
+    be  determined  that  the  request  cannot  be  satisfied  immediately.
+    Instead, there is a need to requeue the caller until the request can be
+    handled.
+
+        - alternatively,  part of the  request may be  handled immediately,
+    but  there may  be additional  steps  in  the process  that need  to be
+    performed at a later point.
+
+  I would be like to do two examples used REQUEUE statement.
+
+First : You go to hospital first and you need dentist but present only
+        surgeon  and pediatrician.
+   1.   You may wait dentist and nobody in queue can go to doctors
+        (perhaps they need surgeon or pediatrician).
+        There is calling entry with barrier.
+   2.   You may go to tail of queue and others may go to doctors.
+        There is REQUEUE statement.
+
+    Second: You are invited to boss but he is busy.
+    1.   You may wait boss free ( entry with barrier)
+    2.   You may come back to work ( REQUEUE statement with ABORT).
+
+    Or next example :
+    Protected type behaves as the king, nominating audience, and a tasks
+    causing ENTRY point as the ambassadors, desiring to receive it.
+    Because in audience time the king communicates only with one
+    ambassador,there is the queue. And there where the present queue  there is
+    some priorities system. In elementary case when everyone are equal -
+    it is FIFO (who earlier has come, that earlier have served) In more complex
+    case in queue there is the moving according to priority.
+    Some very proud ambassadors can not wish to stand in queue (REQUEUE
+    with ABORT), and some "very petty " can simply deliver in tail (REQUEUE).
+
+        The  task  types  and  protected  types  may  be  declared  only in
+    subprograms or packages. They are the  PRIVATE LIMITED types and can be
+    used as parameters in the subprograms directly or by access.
+
+        It  is impossible  to give  a full  description of  Ada-95 in  this
+    little  paper,  but  I  hope  that  now  you  can read ISO standard and
+    understand it.
+
+

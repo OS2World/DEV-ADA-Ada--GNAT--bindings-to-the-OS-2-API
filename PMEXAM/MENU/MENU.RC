@@ -1,0 +1,32 @@
+#include "pm_ui.h"
+#include "menu.h"
+
+ICON    ID_WINDOW menu.ico
+BITMAP  ID_BITMAP  PRELOAD prodinfo.bmp
+MENU    ID_WINDOW  PRELOAD
+BEGIN
+  SUBMENU "~Draw", ID_Draw
+  BEGIN
+    MENUITEM "~Lines \tCtrl+l",      ID_Lines, MIS_TEXT
+    MENUITEM "~Arcs \tCtrl+a",       ID_Arcs, MIS_TEXT
+    MENUITEM "~Rectangles \tCtrl+r", ID_Rectangles, MIS_TEXT
+    MENUITEM "~Clear \tCtrl+c",      ID_Clear, MIS_TEXT
+  END
+END
+
+MENU ID_POP_UP PRELOAD
+BEGIN
+  MENUITEM "~Lines",      ID_Lines, MIS_TEXT
+  MENUITEM "~Arcs",       ID_Arcs, MIS_TEXT
+  MENUITEM "~Rectangles", ID_Rectangles, MIS_TEXT
+  MENUITEM "~Clear",      ID_Clear, MIS_TEXT
+END
+
+ACCELTABLE ID_WINDOW PRELOAD
+BEGIN
+  "l",   ID_Lines,      CONTROL
+  "a",   ID_Arcs,       CONTROL
+  "r",   ID_Rectangles, CONTROL
+  "c",   ID_Clear,      CONTROL
+END
+

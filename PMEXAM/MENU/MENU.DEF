@@ -1,0 +1,16 @@
+;******* MENU    Sample Program Module Definition File (.DEF) ********
+;
+;  Different HEAPSIZE used. ( 1024 bytes )
+
+
+NAME    menu  WINDOWAPI
+
+DESCRIPTION 'OS/2 Presentation Manager Sample'
+
+DATA    MULTIPLE
+
+; STACKSIZE   8192
+HEAPSIZE    1024
+
+PROTMODE
+
